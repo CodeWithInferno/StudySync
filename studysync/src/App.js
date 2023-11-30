@@ -8,6 +8,7 @@ import Snow from './components/snow';
 import Rain from './components/rain';
 import Sounds from './components/Sounds';
 import MyDock from './components/Dock';
+import ImageContainer from './components/ImageSelector'
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/snow" element={<Snow />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/" element={<Pomodoro />} />
+          <Route path="/image" element={<ImageContainer />} />
         </Routes>
       </Router>
     </div>

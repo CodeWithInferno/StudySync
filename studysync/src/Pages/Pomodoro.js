@@ -1,23 +1,35 @@
-// // src/pages/Pomodoro.js
+
+
+
+
+
+
+
+
+// // Pomodoro.js
 // import React, { useState, useEffect, useRef } from 'react';
-// import Settings from './Settings'; // Import the Settings component
+// import Settings from './Settings';
+// import Snowfall from 'react-snowfall';
+// import Rain from '../components/rain';
 // import { FaPlay, FaPause, FaRedo, FaCog } from 'react-icons/fa';
 // import { ToastContainer, toast } from 'react-toastify';
 // import 'react-toastify/dist/ReactToastify.css';
 // import './Pomodoro.css';
 // import SpotifyPlayer from '../components/SpotifyPlayer';
 // import Signup from '../components/SignUp';
-
+// import MyDock from '../components/Dock';
 // import { useAuth } from '../components/AuthContext';
-
-
+// import ImageSelector from '../components/ImageSelector'; // Import the ImageSelector component
 
 // const Pomodoro = () => {
 //   const [minutes, setMinutes] = useState(25);
 //   const [seconds, setSeconds] = useState(0);
 //   const [timerState, setTimerState] = useState('idle');
 //   const [showSettings, setShowSettings] = useState(false);
+//   const [showSnow, setShowSnow] = useState(false);
+//   const [showRain, setShowRain] = useState(false);
 //   const [selectedImage, setSelectedImage] = useState('');
+//   const [isImageOpen, setIsImageOpen] = useState(false); // Track image selector state
 //   const timerRef = useRef(null);
 
 //   useEffect(() => {
@@ -25,14 +37,16 @@
 //     if (storedImage) {
 //       setSelectedImage(storedImage);
 //       document.body.style.backgroundImage = `url(/images/${storedImage})`;
-//       document.body.style.backgroundColor = ''; // Reset background color
-//       document.body.style.color = ''; // Reset text color
+//       document.body.style.backgroundColor = '';
+//       document.body.style.color = '';
 //     } else {
 //       document.body.style.backgroundColor = '#000';
 //       document.body.style.color = '#fff';
 //     }
 //   }, []);
+
 //   const { isAuth, login, logout } = useAuth();
+
 //   useEffect(() => {
 //     if (timerState === 'running') {
 //       timerRef.current = setInterval(() => {
@@ -74,8 +88,30 @@
 //     setShowSettings(!showSettings);
 //   };
 
+//   const toggleSnow = () => {
+//     setShowSnow(!showSnow);
+//   };
+
+//   const toggleRain = () => {
+//     setShowRain(true);
+//   };
+
+//   const toggleImageSelector = () => {
+//     setIsImageOpen(!isImageOpen);
+//   };
+
+//   const handleSelectImage = (selectedImage) => {
+//     localStorage.setItem('selectedImage', selectedImage);
+//     setSelectedImage(selectedImage);
+//     document.body.style.backgroundImage = `url(/images/${selectedImage})`;
+//     document.body.style.backgroundColor = '';
+//     document.body.style.color = '';
+//   };
+
 //   return (
 //     <div className="pomodoro-container">
+//       {showSnow && <Snowfall />}
+//       {showRain && <Rain />}
 //       <div className="timer-container">
 //         <div className="timer">
 //           <span className="time">
@@ -111,21 +147,25 @@
 //           <button onClick={toggleSettings}>
 //             <FaCog />
 //           </button>
+//           <button onClick={toggleSnow}>Snow</button>
+//           <button onClick={toggleRain}>Rain</button>
+//           <button onClick={toggleImageSelector}>Change Image</button>
 //         </div>
 //       </div>
 
 //       {showSettings && <Settings onClose={toggleSettings} />}
-//       <SpotifyPlayer /> {/* Include the SpotifyPlayer component here */}
+//       <SpotifyPlayer />
 
 //       <ToastContainer />
 
-//       {/* Transparent buttons in the top right corner */}
 //       {!isAuth && (
 //         <div className="top-right-buttons">
 //           <button className="transparent-button">SignUp</button>
 //           <button className="transparent-button">Login</button>
 //         </div>
 //       )}
+//       {isImageOpen && <ImageSelector onClose={toggleImageSelector} onSelectImage={handleSelectImage} />}
+//       <MyDock />
 //     </div>
 //   );
 // };
@@ -134,19 +174,30 @@
 
 
 
-// src/pages/Pomodoro.js
+
+
+
+
+
+
+
+
+
+
+
 import React, { useState, useEffect, useRef } from 'react';
 import Settings from './Settings';
 import Snowfall from 'react-snowfall';
-import Rain from '../components/rain'; // Import the Rain component
+import Rain from '../components/rain';
 import { FaPlay, FaPause, FaRedo, FaCog } from 'react-icons/fa';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './Pomodoro.css';
 import SpotifyPlayer from '../components/SpotifyPlayer';
 import Signup from '../components/SignUp';
-import MyDock from '../components/Dock'
+import MyDock from '../components/Dock';
 import { useAuth } from '../components/AuthContext';
+import ImageSelector from '../components/ImageSelector'; // Import the ImageSelector component
 
 const Pomodoro = () => {
   const [minutes, setMinutes] = useState(25);
@@ -154,8 +205,9 @@ const Pomodoro = () => {
   const [timerState, setTimerState] = useState('idle');
   const [showSettings, setShowSettings] = useState(false);
   const [showSnow, setShowSnow] = useState(false);
-  const [showRain, setShowRain] = useState(false); // Track rain state
+  const [showRain, setShowRain] = useState(false);
   const [selectedImage, setSelectedImage] = useState('');
+  const [isImageOpen, setIsImageOpen] = useState(false); // Track image selector state
   const timerRef = useRef(null);
 
   useEffect(() => {
@@ -222,10 +274,22 @@ const Pomodoro = () => {
     setShowRain(true);
   };
 
+  const toggleImageSelector = () => {
+    setIsImageOpen(!isImageOpen);
+  };
+
+  const handleSelectImage = (selectedImage) => {
+    localStorage.setItem('selectedImage', selectedImage);
+    setSelectedImage(selectedImage);
+    document.body.style.backgroundImage = `url(/images/${selectedImage})`;
+    document.body.style.backgroundColor = '';
+    document.body.style.color = '';
+  };
+
   return (
     <div className="pomodoro-container">
       {showSnow && <Snowfall />}
-      {showRain && <Rain />} {/* Render Rain component when showRain is true */}
+      {showRain && <Rain />}
       <div className="timer-container">
         <div className="timer">
           <span className="time">
@@ -262,7 +326,8 @@ const Pomodoro = () => {
             <FaCog />
           </button>
           <button onClick={toggleSnow}>Snow</button>
-          <button onClick={toggleRain}>Rain</button> {/* Button to toggle rain */}
+          <button onClick={toggleRain}>Rain</button>
+          <button onClick={toggleImageSelector}>Change Image</button>
         </div>
       </div>
 
@@ -277,6 +342,7 @@ const Pomodoro = () => {
           <button className="transparent-button">Login</button>
         </div>
       )}
+      {isImageOpen && <ImageSelector onClose={toggleImageSelector} onSelectImage={handleSelectImage} />}
       <MyDock />
     </div>
   );

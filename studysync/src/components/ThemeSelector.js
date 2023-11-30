@@ -28,3 +28,10 @@ const Settings = ({ onClose }) => {
 };
 
 export default Settings;
+
+
+
+
+
+
+
