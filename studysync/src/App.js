@@ -9,6 +9,7 @@ import Rain from './components/rain';
 import Sounds from './components/Sounds';
 import MyDock from './components/Dock';
 import ImageContainer from './components/ImageSelector'
+import Todo from './components/Todo'
 
 function App() {
   return (
@@ -16,13 +17,14 @@ function App() {
       <Router>
         <Routes>
           <Route path="/signup" element={<SignUp />} />
-          <Route path="/rain" element={<Rain />} />
-          <Route path="/sounds" element={<Sounds />} />
-          <Route path="/dock" element={<MyDock />} />
-          <Route path="/snow" element={<Snow />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/" element={<Pomodoro />} />
-          <Route path="/image" element={<ImageContainer />} />
+          <Route path="/prototype/rain" element={<Rain />} />
+          <Route path="/prototype/sounds" element={<Sounds />} />
+          <Route path="/prototype/dock" element={<MyDock />} />
+          <Route path="/prototype/snow" element={<Snow />} />
+          <Route path="/prototype/todo" element={<Todo />} />
+          <Route path="/prototype/image" element={<ImageContainer />} />
         </Routes>
       </Router>
     </div>
