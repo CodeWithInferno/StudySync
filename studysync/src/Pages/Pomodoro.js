@@ -1,23 +1,4 @@
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import React, { useState, useEffect, useRef } from 'react';
 import Settings from './Settings';
 import Snowfall from 'react-snowfall';
@@ -185,6 +166,8 @@ const Pomodoro = () => {
           <button className="transparent-button">Login</button>
         </div>
       )}
+      
+
       {isImageOpen && <ImageSelector onClose={toggleImageSelector} onSelectImage={handleSelectImage} />}
       <MyDock />
     </div>

@@ -1,7 +1,7 @@
 // DayStreak.js
 import React, { useEffect, useState } from 'react';
 import { useAuth } from './AuthContext'; // Adjust the import path based on your file structure
-import { auth } from '../Firebase'; // Import the auth object
+import { firestore } from '../Firebase'; // Import the firestore object from Firebase
 
 const DayStreak = () => {
   const { user } = useAuth();
@@ -24,17 +24,27 @@ const DayStreak = () => {
       fetchUserData();
 
       const lastVisitDate = localStorage.getItem('lastVisitDate');
-      const currentDate = new Date().toISOString().split('T')[0]; // Get only the date part
+      const currentDate = new Date().toISOString().split('T')[0];
 
       if (lastVisitDate !== currentDate) {
-        updateDayStreak();
+        updateDayStreak(currentDate); // Pass the current date to the update function
       }
     }
   }, [user]);
 
-  const updateDayStreak = () => {
-    setDayStreak((prevStreak) => prevStreak + 1);
-    localStorage.setItem('lastVisitDate', new Date().toISOString().split('T')[0]);
+  const updateDayStreak = async (currentDate) => {
+    const userDocRef = firestore.collection('Users').doc(user.uid);
+    const userData = await userDocRef.get();
+
+    const newDayStreak = userData.exists ? (userData.data().dayStreak || 0) + 1 : 1;
+
+    await userDocRef.update({
+      dayStreak: newDayStreak,
+      lastLoginDate: currentDate, // Update last login date to the current date
+    });
+
+    setDayStreak(newDayStreak);
+    localStorage.setItem('lastVisitDate', currentDate);
   };
 
   return (
@@ -51,6 +61,7 @@ const DayStreak = () => {
 export default DayStreak;
 
 const fetchUserDataFromDatabase = async (userId) => {
-  const user = auth.currentUser;
-  return { email: user ? user.email : '', dayStreak: 3 }; // Dummy data, replace with your actual data
+  const userDocRef = firestore.collection('Users').doc(userId);
+  const userDoc = await userDocRef.get();
+  return userDoc.exists ? userDoc.data() : { email: '', dayStreak: 0 };
 };

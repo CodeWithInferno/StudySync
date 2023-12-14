@@ -15,8 +15,9 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-import { createUserWithEmailAndPassword } from 'firebase/auth';  // Correct import
-import { auth } from '../Firebase';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth, firestore } from '../Firebase';
+import { collection, addDoc } from 'firebase/firestore';
 
 const defaultTheme = createTheme();
 
@@ -25,16 +26,30 @@ const SignUp = () => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('');
+  const [receiveEmails, setReceiveEmails] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
+      // Create user in Firebase Authentication
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
         password
       );
+
+      // Add user data to Firestore Users collection
+      const userDoc = {
+        DayStreak: 0, // Set DayStreak to 0 for each user
+        Email: email,
+        EmailsUpdates: receiveEmails ? 'Yes' : 'No',
+        Password: password, // Note: You might not want to store the password in Firestore for security reasons
+        Username: username,
+      };
+
+      await addDoc(collection(firestore, 'Users'), userDoc);
 
       console.log('User signed up:', userCredential.user);
 
@@ -69,6 +84,18 @@ const SignUp = () => {
                 <TextField
                   required
                   fullWidth
+                  id="username"
+                  label="Username"
+                  name="username"
+                  autoComplete="username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
                   id="email"
                   label="Email Address"
                   name="email"
@@ -92,8 +119,8 @@ const SignUp = () => {
               </Grid>
               <Grid item xs={12}>
                 <FormControlLabel
-                  control={<Checkbox value="allowExtraEmails" color="primary" />}
-                  label="I want to receive inspiration, marketing promotions and updates via email."
+                  control={<Checkbox value={receiveEmails} color="primary" onChange={() => setReceiveEmails(!receiveEmails)} />}
+                  label="I want to receive inspiration, marketing promotions, and updates via email."
                 />
               </Grid>
             </Grid>
